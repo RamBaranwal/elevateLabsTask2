@@ -6,14 +6,14 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building application...'
-                sh 'docker build -t jenkins-cicd-app .'
+                bat 'docker build -t jenkins-cicd-app .'
             }
         }
 
         stage('Test') {
             steps {
                 echo 'Testing application...'
-                sh 'docker run --rm jenkins-cicd-app nginx -t'
+                bat 'docker run --rm jenkins-cicd-app nginx -t'
             }
         }
 
@@ -21,14 +21,10 @@ pipeline {
             steps {
                 echo 'Deploying application...'
 
-                sh '''
-                    docker stop jenkins-cicd-app || true
-                    docker rm jenkins-cicd-app || true
-
-                    docker run -d \
-                    --name jenkins-cicd-app \
-                    -p 8081:80 \
-                    jenkins-cicd-app
+                bat '''
+                    docker stop jenkins-cicd-app
+                    docker rm jenkins-cicd-app
+                    docker run -d --name jenkins-cicd-app -p 8081:80 jenkins-cicd-app
                 '''
             }
         }
